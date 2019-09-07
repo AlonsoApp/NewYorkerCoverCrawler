@@ -28,11 +28,8 @@ class NewYorkerSpider(scrapy.Spider):
         try:
             button_next = response.css(BUTTON_SELECTOR)[1]
             next_media = button_next.css(DATALINK_SELECTOR).extract_first()
-
             cover_div = response.css(COVER_DIV)[0]
-
             source = cover_div.css(IMG_SELECTOR)[0]
-
             media = source.css(MEDIA_SELECTOR).extract_first()
             src_img = source.css(SRCSET_SELECTOR).extract_first()
             yield {
