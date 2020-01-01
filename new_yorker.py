@@ -21,7 +21,7 @@ IMG_FORMAT = '.jpg'
 
 class NewYorkerSpider(scrapy.Spider):
     name = "ny_spider"
-    next_media = "/magazine/1925/02/21"
+    next_media = "/magazine/2020/01/06"  # "/magazine/1925/02/21"
     start_urls = [str(URL_BASE + next_media)]
 
     def parse(self, response):
