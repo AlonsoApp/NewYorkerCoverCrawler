@@ -21,29 +21,26 @@ IMG_FORMAT = '.jpg'
 
 class NewYorkerSpider(scrapy.Spider):
     name = "ny_spider"
-    next_media = "/magazine/2020/01/06"  # "/magazine/1925/02/21"
-    start_urls = [str(URL_BASE + next_media)]
+
+    def __init__(self, next_issue='', **kwargs):
+        self.next_media = next_issue #/magazine/2020/01/06
+        self.start_urls = [str(URL_BASE + self.next_media)]
+        super().__init__(**kwargs)
 
     def parse(self, response):
         try:
             button_next = response.css(BUTTON_SELECTOR)[1]
-            next_media = button_next.css(DATALINK_SELECTOR).extract_first()
+            self.next_media = button_next.css(DATALINK_SELECTOR).extract_first()
             cover_div = response.css(COVER_DIV)[0]
             source = cover_div.css(IMG_SELECTOR)[0]
-            media = source.css(MEDIA_SELECTOR).extract_first()
             src_img = source.css(SRCSET_SELECTOR).extract_first()
-            yield {
-                'next_media': next_media,
-                'media': media,
-                'src_img': src_img,
-            }
             img_url = src_img.split(' ')[1]
             img_name = self.build_img_file_name(response.request.url)
             self.download(img_url, str(IMG_PATH+img_name))
 
-            if next_media != '':
+            if self.next_media != '':
                 time.sleep(1)
-                yield response.follow(str(URL_BASE + next_media), self.parse)
+                yield response.follow(str(URL_BASE + self.next_media), self.parse)
         except:
             self.file_print(response.request.url)
             yield response.follow(self.guess_next_url(response.request.url), self.parse)

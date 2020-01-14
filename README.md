@@ -2,5 +2,5 @@
 
 Launch command
 ```shell
-scrapy runspider new_yorker.py
+scrapy runspider new_yorker.py -a next_issue=/magazine/2020/01/06
 ```
